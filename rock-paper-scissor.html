@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colorful Rock Paper Scissors</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Colorful Variables */
+        :root {
+            --neon-pink: #ff6ec7;
+            --electric-blue: #00f5ff;
+            --lime-green: #00ff9d;
+            --violet: #9d4edd;
+            --sunshine: #ffd166;
+            --dark-bg: #1a1a2e;
+            --light-bg: #16213e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--dark-bg), var(--light-bg));
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            overflow-x: hidden;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin: 1rem 0;
+            background: linear-gradient(to right, var(--neon-pink), var(--electric-blue), var(--lime-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 5px var(--neon-pink), 0 0 10px var(--electric-blue);
+            }
+            to {
+                text-shadow: 0 0 10px var(--electric-blue), 0 0 20px var(--lime-green);
+            }
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 500px;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.2);
+        }
+
+        .score {
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        .score span {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--sunshine);
+        }
+
+        .choices {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .choice {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .choice::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .choice:hover::before {
+            opacity: 0.3;
+        }
+
+        .choice i {
+            font-size: 4rem;
+            pointer-events: none;
+        }
+
+        #rock {
+            background: linear-gradient(45deg, var(--neon-pink), var(--violet));
+            box-shadow: 0 0 20px var(--neon-pink);
+        }
+
+        #paper {
+            background: linear-gradient(45deg, var(--electric-blue), #4cc9f0));
+            box-shadow: 0 0 20px var(--electric-blue);
+        }
+
+        #scissors {
+            background: linear-gradient(45deg, var(--lime-green), #38b000));
+            box-shadow: 0 0 20px var(--lime-green);
+        }
+
+        .choice:hover {
+            transform: scale(1.1) rotate(10deg);
+        }
+
+        .choice:active {
+            transform: scale(0.95);
+        }
+
+        .result {
+            margin: 2rem 0;
+            font-size: 2rem;
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-text {
+            background: linear-gradient(to right, var(--neon-pink), var(--sunshine));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+
+        .computer-choice {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .computer-choice i {
+            font-size: 4rem;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .show-computer-choice {
+            animation: computerChoice 0.5s forwards;
+        }
+
+        @keyframes computerChoice {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .reset-btn {
+            background: linear-gradient(45deg, var(--violet), var(--neon-pink));
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 1rem;
+            box-shadow: 0 0 15px var(--violet);
+            transition: all 0.3s;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 25px var(--neon-pink);
+        }
+
+        .reset-btn:active {
+            transform: translateY(1px);
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: var(--neon-pink);
+            opacity: 0;
+            animation: confettiFall 5s linear forwards;
+            z-index: 1000;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .choice {
+                width: 90px;
+                height: 90px;
+            }
+            
+            .choice i {
+                font-size: 3rem;
+            }
+            
+            .computer-choice {
+                width: 90px;
+                height: 90px;
+            }
+            
+            .computer-choice i {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Rock Paper Scissors</h1>
+    
+    <div class="score-board">
+        <div class="score">
+            You <span id="user-score">0</span>
+        </div>
+        <div class="score">
+            Computer <span id="computer-score">0</span>
+        </div>
+    </div>
+    
+    <div class="choices">
+        <div class="choice" id="rock">
+            <i class="fas fa-hand-rock"></i>
+        </div>
+        <div class="choice" id="paper">
+            <i class="fas fa-hand-paper"></i>
+        </div>
+        <div class="choice" id="scissors">
+            <i class="fas fa-hand-scissors"></i>
+        </div>
+    </div>
+    
+    <div class="result">
+        <p id="result-text" class="result-text">Choose your weapon!</p>
+    </div>
+    
+    <div class="computer-choice">
+        <i id="computer-icon"></i>
+    </div>
+    
+    <button class="reset-btn" id="reset">Reset Game</button>
+    
+    <script>
+        // Game elements
+        const userScoreSpan = document.getElementById('user-score');
+        const computerScoreSpan = document.getElementById('computer-score');
+        const resultText = document.getElementById('result-text');
+        const computerIcon = document.getElementById('computer-icon');
+        const resetBtn = document.getElementById('reset');
+        const choices = document.querySelectorAll('.choice');
+        const computerChoiceDiv = document.querySelector('.computer-choice');
+        
+        // Game variables
+        let userScore = 0;
+        let computerScore = 0;
+        
+        // Game functions
+        function getComputerChoice() {
+            const choices = ['rock', 'paper', 'scissors'];
+            const randomNumber = Math.floor(Math.random() * 3);
+            return choices[randomNumber];
+        }
+        
+        function win(userChoice, computerChoice) {
+            userScore++;
+            userScoreSpan.textContent = userScore;
+            resultText.textContent = `You win! ${userChoice} beats ${computerChoice}`;
+            createConfetti();
+        }
+        
+        function lose(userChoice, computerChoice) {
+            computerScore++;
+            computerScoreSpan.textContent = computerScore;
+            resultText.textContent = `You lose! ${computerChoice} beats ${userChoice}`;
+        }
+        
+        function draw() {
+            resultText.textContent = "It's a draw!";
+        }
+        
+        function game(userChoice) {
+            const computerChoice = getComputerChoice();
+            
+            // Show computer choice with animation
+            computerIcon.className = '';
+            computerIcon.classList.add('fas');
+            
+            if (computerChoice === 'rock') {
+                computerIcon.classList.add('fa-hand-rock');
+            } else if (computerChoice === 'paper') {
+                computerIcon.classList.add('fa-hand-paper');
+            } else {
+                computerIcon.classList.add('fa-hand-scissors');
+            }
+            
+            computerChoiceDiv.classList.add('show-computer-choice');
+            
+            setTimeout(() => {
+                computerChoiceDiv.classList.remove('show-computer-choice');
+            }, 1000);
+            
+            // Determine winner
+            switch (userChoice + computerChoice) {
+                case 'rockscissors':
+                case 'paperrock':
+                case 'scissorspaper':
+                    win(userChoice, computerChoice);
+                    break;
+                case 'rockpaper':
+                case 'paperscissors':
+                case 'scissorsrock':
+                    lose(userChoice, computerChoice);
+                    break;
+                case 'rockrock':
+                case 'paperpaper':
+                case 'scissorsscissors':
+                    draw();
+                    break;
+            }
+        }
+        
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                
+                // Random colors
+                const colors = [
+                    'var(--neon-pink)',
+                    'var(--electric-blue)',
+                    'var(--lime-green)',
+                    'var(--sunshine)',
+                    'var(--violet)'
+                ];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.backgroundColor = randomColor;
+                
+                // Random position and size
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.width = Math.random() * 10 + 5 + 'px';
+                confetti.style.height = Math.random() * 10 + 5 + 'px';
+                
+                // Random animation duration
+                confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
+                
+                document.body.appendChild(confetti);
+                
+                // Remove confetti after animation
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+        
+        function resetGame() {
+            userScore = 0;
+            computerScore = 0;
+            userScoreSpan.textContent = '0';
+            computerScoreSpan.textContent = '0';
+            resultText.textContent = 'Choose your weapon!';
+            computerIcon.className = '';
+            computerChoiceDiv.classList.remove('show-computer-choice');
+        }
+        
+        // Event listeners
+        choices.forEach(choice => {
+            choice.addEventListener('click', function() {
+                const userChoice = this.id;
+                game(userChoice);
+            });
+        });
+        
+        resetBtn.addEventListener('click', resetGame);
+    </script>
+</body>
+</html>
